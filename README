@@ -1,0 +1,11 @@
+Masyarakat => Melapor
+Petugas => Validasi pengaduan dengan melakukan pengamatan di tkp
+Administrator => Mengubah status pengaduan
+
+Status:
+Pending => Dalam pembenahan
+Solved => Terselesaikan
+Rejected => Ditolak
+
+Catatan:
+Database saya cantumkan di repository

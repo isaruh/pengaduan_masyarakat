@@ -8,8 +8,27 @@ $stmt->bind_param("s", $_SESSION['user']);
 $stmt->execute();
 $result_pengaduan = $stmt->get_result();
 
-$sql = "SELECT * FROM subjek";
-$result_subjek = $conn->query($sql);
+
+$sql = "SELECT id_pengaduan, isi FROM tanggapan WHERE username_pengadu = ? ORDER BY created_at DESC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $_SESSION['user']);
+$stmt->execute();
+$result_tanggapan = $stmt->get_result();
+
+$list_tanggapan = [];
+if ($result_tanggapan->num_rows > 0) {
+    while ($row = $result_tanggapan->fetch_assoc()) {
+        $list_tanggapan[] = [
+            "id_pengaduan" => $row['id_pengaduan'],
+            "isi_pengaduan" => $row['isi']
+        ];
+    }
+} else {
+    $list_tanggapan[] = [
+        "id_pengaduan" => null,
+        "isi_pengaduan" => "Tidak ada tanggapan."
+    ];
+}
 ?>
 
 <!DOCTYPE html>
@@ -17,7 +36,7 @@ $result_subjek = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laporan</title>
+    <title>Laporan Anda</title>
     <style>
         * {
             margin: 0;
@@ -67,22 +86,6 @@ $result_subjek = $conn->query($sql);
         .search-box img {
             width: 20px;
             height: 20px;
-        }
-
-        .filter-btn {
-            background-color: white;
-            border-radius: 10px;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .filter-btn img {
-            width: 30px;
-            height: auto;
         }
 
         .report-list {
@@ -153,7 +156,7 @@ $result_subjek = $conn->query($sql);
 
         .modal-content {
             background-color: white;
-            margin: 8% auto;
+            margin: 8% auto 12px auto;
             padding: 20px 40px;
             border-radius: 20px;
             width: 80%;
@@ -161,6 +164,11 @@ $result_subjek = $conn->query($sql);
             display: flex;
             flex-direction: column;
             gap: 30px;
+        }
+
+        .modal-content.tanggapan {
+            margin-top: 10px;
+            margin-bottom: 8%;
         }
 
         .modal-header {
@@ -189,6 +197,27 @@ $result_subjek = $conn->query($sql);
             font-size: 16px;
             max-width: 500px;
             word-wrap: break-word;
+        }
+
+        .modal-footer h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer p {
+            color: #555;
+        }
+
+        .modal-content.tanggapan {
+            margin-top: 10px;
+            margin-bottom: 8%;
+        }
+
+        .modal-content.tanggapan #modalTanggapan p {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
 
         .thumbnail-container {
@@ -228,72 +257,9 @@ $result_subjek = $conn->query($sql);
             text-decoration: none;
             cursor: pointer;
         }
-
-        /* Gaya untuk popup filter */
-        .filter-popup {
-            position: absolute;
-            top: 90px; /* Sesuaikan dengan tinggi navbar jika ada */
-            right: 100px; /* Jarak dari kanan */
-            background-color: white;
-            border: 1px solid #ccc;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            z-index: 1000; /* Pastikan popup muncul di atas elemen lain */
-            width: 200px; /* Lebar popup */
-        }
-
-        /* Gaya untuk judul popup */
-        .filter-popup h3 {
-            margin: 0 0 10px;
-            font-size: 18px;
-        }
-
-        /* Gaya untuk daftar kategori */
-        .filter-popup ul {
-            list-style-type: none; /* Menghilangkan bullet */
-            padding: 0;
-            margin: 0;
-        }
-
-        /* Gaya untuk item kategori */
-        .filter-popup li {
-            padding: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        /* Gaya saat hover pada item kategori */
-        .filter-popup li:hover {
-            background-color: #f0f0f0; /* Warna latar belakang saat hover */
-        }
-
-        /* Gaya untuk item kategori yang dipilih */
-        .filter-popup li.selected {
-            border: 2px solid #007bff;
-            border-radius: 5px;
-        }
-
-        /* Gaya untuk tombol tutup */
-        #closeFilter {
-            background-color: #007bff; /* Warna latar belakang tombol */
-            color: white; /* Warna teks tombol */
-            border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%; /* Lebar penuh */
-        }
-
-        /* Gaya saat hover pada tombol tutup */
-        #closeFilter:hover {
-            background-color: #0056b3; /* Warna latar belakang saat hover */
-        }
     </style>
 </head>
 <body>
-
     <?php include "comp/navbar.php"; ?>
 
     <div class="search-container">
@@ -301,26 +267,6 @@ $result_subjek = $conn->query($sql);
             <input type="text" id="searchInput" placeholder="Cari...">
             <img src="img/search.png" alt="Search Icon">
         </div>
-        <div class="filter-btn" id="filterBtn">
-            <img src="img/filter.png">
-        </div>
-    </div>
-
-    <div id="filterPopup" class="filter-popup" style="display: none;">
-        <h3>Fasilitas</h3>
-        <ul>
-            <li data-category='all'>Semua</li>
-            <?php
-            if ($result_subjek->num_rows > 0) {
-                while ($row = $result_subjek->fetch_assoc()) {
-                    echo "
-                    <li data-category='".$row['fasilitas']."'>".$row['fasilitas']."</li>
-                    ";
-                }
-            }
-            ?>
-        </ul>
-        <button id="closeFilter">Tutup</button>
     </div>
 
     <div class="report-list">
@@ -334,13 +280,20 @@ $result_subjek = $conn->query($sql);
                 $fileData = base64_encode($row['file_lampiran']);
                 $lampiran = "data:$mimeType;base64,$fileData";
 
+                $tanggapan = [];
+                foreach ($list_tanggapan as $tanggapan_item) {
+                    if (isset($tanggapan_item['id_pengaduan']) && $tanggapan_item['id_pengaduan'] === $row['id']) {
+                        $tanggapan[] = $tanggapan_item['isi_pengaduan'];
+                    }
+                }
+
                 echo "
                 <div class='report-item'
                     data-lokasi='".$row['lokasi']."' 
-                    data-subjek='".$row['subjek']."' 
                     data-tanggal='".$row['tanggal']."' 
                     data-isi='".$row['isi']."' 
-                    data-lampiran='".$lampiran."'>
+                    data-lampiran='".$lampiran."' 
+                    data-tanggapan='".json_encode($tanggapan, JSON_HEX_APOS)."'>
                     <div class='report-info'>
                         <div class='title'>".$row['judul']."</div>
                         <div class='username'>".$row['user']."</div>
@@ -377,6 +330,12 @@ $result_subjek = $conn->query($sql);
                 </div>
             </div>
         </div>
+        <div class="modal-content tanggapan">
+            <h3>Tanggapan</h3>
+            <p id="modalTanggapan">
+                Isi tanggapan.
+            </p>
+        </div>
     </div>
 
     <div id="fullViewModal" class="modal">
@@ -395,8 +354,6 @@ $result_subjek = $conn->query($sql);
             const fullViewContent = document.getElementById("fullViewContent");
             const searchInput = document.getElementById("searchInput");
             const reportItems = document.querySelectorAll(".report-item");
-            const filterPopup = document.getElementById("filterPopup");
-            const closeFilterBtn = document.getElementById("closeFilter");
 
             // Fungsi untuk menampilkan modal dengan data laporan
             function showModal(data) {
@@ -406,9 +363,20 @@ $result_subjek = $conn->query($sql);
                 document.getElementById("modalLokasi").textContent = data.lokasi;
                 document.getElementById("modalIsi").textContent = data.isi;
 
-                modalLampiran.innerHTML = ""; // Reset thumbnail
+                // Reset dan tampilkan tanggapan
+                const modalTanggapan = document.getElementById("modalTanggapan");
+                modalTanggapan.innerHTML = ""; // Reset konten tanggapan
+                if (data.tanggapan && data.tanggapan.length > 0) {
+                    data.tanggapan.forEach(function(tanggapan) {
+                        const p = document.createElement("p");
+                        p.textContent = tanggapan;
+                        modalTanggapan.appendChild(p);
+                    });
+                } else {
+                    modalTanggapan.textContent = "Tidak ada tanggapan.";
+                }
 
-                // Buat thumbnail
+                modalLampiran.innerHTML = ""; // Reset thumbnail
                 const thumbnail = document.createElement("div");
                 thumbnail.className = "thumbnail-container";
                 thumbnail.onclick = function() {
@@ -473,8 +441,6 @@ $result_subjek = $conn->query($sql);
                     modal.style.display = "none";
                 } else if (event.target == fullViewModal) {
                     fullViewModal.style.display = "none";
-                } else if (event.target == filterPopup) {
-                    filterPopup.style.display = "none";
                 }
             }
 
@@ -487,7 +453,8 @@ $result_subjek = $conn->query($sql);
                         tanggal: this.getAttribute("data-tanggal"),
                         lokasi: this.getAttribute("data-lokasi"),
                         isi: this.getAttribute("data-isi"),
-                        lampiran: this.getAttribute("data-lampiran")
+                        lampiran: this.getAttribute("data-lampiran"),
+                        tanggapan: JSON.parse(this.getAttribute("data-tanggapan"))
                     };
                     showModal(data);
                 });
@@ -506,45 +473,7 @@ $result_subjek = $conn->query($sql);
                     }
                 });
             });
-
-            // Tampilkan popup filter saat tombol filter ditekan
-            filterBtn.addEventListener("click", function() {
-                filterPopup.style.display = filterPopup.style.display === "none" ? "block" : "none";
-            });
-
-
-            // Tutup popup filter saat tombol tutup ditekan
-            closeFilterBtn.addEventListener("click", function() {
-                filterPopup.style.display = "none";
-            });
-
-
-            // Tambahkan event listener untuk kategori
-            filterPopup.querySelectorAll("li").forEach(function(item) {
-                item.addEventListener("click", function() {
-                    const selectedCategory = this.getAttribute("data-category");
-
-                    // Reset semua kategori untuk menghapus penandaan
-                    filterPopup.querySelectorAll("li").forEach(li => {
-                        li.classList.remove("selected");
-                    });
-
-                    // Tandai kategori yang dipilih
-                    this.classList.add("selected");
-
-                    reportItems.forEach(function(report) {
-                        const reportCategory = report.getAttribute("data-subjek");
-                        if (selectedCategory === 'all' || reportCategory === selectedCategory) {
-                            report.style.display = ""; // Tampilkan item
-                        } else {
-                            report.style.display = "none"; // Sembunyikan item
-                        }
-                    });
-                    filterPopup.style.display = "none"; // Tutup popup setelah memilih kategori
-                });
-            });
         });
     </script>
-
 </body>
 </html>

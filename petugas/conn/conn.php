@@ -3,7 +3,7 @@
 $host_conn = "localhost";
 $user_conn = "root";
 $password_conn = "";
-$database_conn = "db_pengaduan_fasilitas";
+$database_conn = "pengaduan_masyarakat";
 
 $conn = new mysqli($host_conn, $user_conn, $password_conn, $database_conn);
 

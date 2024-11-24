@@ -6,12 +6,12 @@ include '../../conn/conn.php';
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-$user = "SELECT * FROM warga WHERE username='$username'";
+$user = "SELECT * FROM masyarakat WHERE username='$username'";
 $user_result = $conn->query($user);
 if ($user_result->num_rows > 0) {
     $row = $user_result->fetch_assoc();
     if ($password === $row['password']) {
-        $_SESSION['user_id'] = $row['id'];
+        $_SESSION['user_nik'] = $row['nik'];
         $_SESSION['user'] = $row['username'];
         echo '<script>alert("Berhasil masuk.");';
         echo 'window.location.href = "../../account.php?account=profile";</script>';

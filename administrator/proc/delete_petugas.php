@@ -9,5 +9,5 @@ $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
     echo '<script> alert("Berhasil dihapus.");';
-    echo 'window.location.href = "../users.php";</script>';
+    echo 'window.location.href = "../petugas.php";</script>';
 }

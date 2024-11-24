@@ -1,15 +1,9 @@
 <div class="navbar">
     <div class="left-section">
         <a href="index.php"><div class="logo"></div></a>
-        <?php
-        if (isset($_SESSION['user'])) {
-            echo "
-            <a href='laporan.php'>
+        <a href='laporan.php'>
             <img src='img/laporan.png' class='laporan'>
-            </a>
-            ";
-        }
-        ?>
+        </a>
     </div>
     <div class="right-section">
         <?php

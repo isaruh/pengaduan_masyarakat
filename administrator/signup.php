@@ -1,15 +1,9 @@
-<?php
-session_start();
-session_unset();
-session_destroy();
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Masuk</title>
+    <title>Form Pendaftaran</title>
     <style>
         * {
             margin: 0;
@@ -28,10 +22,11 @@ session_destroy();
             flex-direction: column;
         }
 
-        img.masuk {
-            width: 150px;
+        img.daftar {
+            width: 120px;
             height: auto;
             margin-bottom: 20px;
+            margin-top: 50px;
         }
 
         .form-container {
@@ -39,7 +34,7 @@ session_destroy();
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
-            max-width: 500px;
+            max-width: 550px;
             width: 100%;
         }
 
@@ -49,7 +44,8 @@ session_destroy();
         }
 
         .form-group input[type="text"],
-        .form-group input[type="password"] {
+        .form-group input[type="password"],
+        .form-group input[type="tel"] {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -58,24 +54,33 @@ session_destroy();
         }
 
         .form-group input[type="text"]::placeholder,
-        .form-group input[type="password"]::placeholder {
+        .form-group input[type="password"]::placeholder,
+        .form-group input[type="tel"]::placeholder {
             color: #aaa;
+        }
+
+        .form-group label {
+            font-size: 14px;
+            color: #555;
+        }
+
+        .form-group small {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
         }
 
         .submit-btn {
             width: 100%;
             background-color: #333;
+            color: #fff;
             padding: 10px;
             margin-bottom: 20px;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
-        }
-
-        .submit-btn img {
-            width: 60px;
-            height: auto;
         }
 
         .submit-btn:hover {
@@ -91,18 +96,28 @@ session_destroy();
     </style>
 </head>
 <body>
-    <img src="img/masuk.png" class="masuk">
+    <img src="img/daftar.png" class="daftar">
     <div class="form-container">
-        <form action="proc/login.php" method="POST">
+        <form action="proc/signup.php" method="POST">
             <div class="form-group">
-                <input type="text" name="username" placeholder="Username *" autocomplete="off" required>
+                <input type="text" name="nik" placeholder="NIK *" autocomplete="off" minlength="16" maxlength="16" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Password *" required>
+                <input type="text" name="nama" placeholder="Nama Lengkap *" autocomplete="off" required>
             </div>
-            <button type="submit" class="submit-btn"><img src="img/masuk.png"></button>
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username *" autocomplete="off" minlength="3" maxlength="20" required>
+            </div>
+            <div class="form-group">
+                <input type="tel" name="no_telp" placeholder="No. Telp *" autocomplete="off" minlength="12" maxlength="13" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password *" minlength="10" maxlength="20" required>
+                <small>Minimal 10 karakter, maksimal 20 karakter, dan diawali huruf kapital. Kombinasi angka, huruf, dan karakter khusus (!@#$%&*).</small>
+            </div>
+            <button type="submit" class="submit-btn">DAFTAR</button>
         </form>
-        <a href="signup.php">daftar</a>
+        <a href="index.php">masuk</a>
     </div>
 </body>
 </html>

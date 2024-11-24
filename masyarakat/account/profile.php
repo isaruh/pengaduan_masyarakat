@@ -2,8 +2,12 @@
 session_start();
 include "conn/conn.php";
 
+if (!isset($_SESSION['user_nik'])) {
+    header('Location: account.php?account=login');
+}
+
 $user = $_SESSION['user'];
-$sql = "SELECT * FROM users WHERE username='$user'";
+$sql = "SELECT * FROM masyarakat WHERE username='$user'";
 $result = $conn->query($sql);
 
 $row = $result->fetch_assoc();
@@ -187,23 +191,15 @@ $row = $result->fetch_assoc();
                 </div>
                 <div class="form-item">
                     <label for="username">Username *</label>
-                    <input type="text" name="username" value="<?= $row['username']; ?>" autocomplete="off" id="username">
+                    <input type="text" name="username" value="<?= $row['username']; ?>" autocomplete="off" id="username" minlength="3" maxlength="20">
                 </div>
                 <div class="form-item">
                     <label for="nik">NIK *</label>
-                    <input type="text" name="nik" value="<?= $row['nik']; ?>" autocomplete="off" id="nik">
+                    <input type="text" name="nik" value="<?= $row['nik']; ?>" autocomplete="off" id="nik" minlength="16" maxlength="16">
                 </div>
                 <div class="form-item">
                     <label for="telp">No. Telp *</label>
-                    <input type="text" name="no_telp" value="<?= $row['no_telp']; ?>" autocomplete="off" id="telp">
-                </div>
-                <div class="form-item">
-                    <label for="tgl_lahir">Tanggal Lahir *</label>
-                    <input type="date" name="tanggal_lahir" value="<?= $row['tanggal_lahir']; ?>" id="tgl_lahir">
-                </div>
-                <div class="form-item">
-                    <label for="alamat">Alamat *</label>
-                    <input type="text" name="alamat" value="<?= $row['alamat']; ?>" autocomplete="off" id="alamat">
+                    <input type="text" name="no_telp" value="<?= $row['no_telp']; ?>" autocomplete="off" id="telp" minlength="12" maxlength="13">
                 </div>
             </div>
             <div class="form-group">

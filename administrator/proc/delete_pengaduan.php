@@ -9,6 +9,13 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $id);
 
 if ($stmt->execute()) {
-    echo '<script>alert("Berhasil dihapus.");';
-    echo 'window.location.href = "../'.$page.'.php";</script>';
+    $stmt = $conn->prepare("DELETE FROM tanggapan WHERE id_pengaduan = ?");
+    $stmt->bind_param("i", $id);
+    if ($stmt->execute()) {
+        echo '<script>alert("Berhasil dihapus.");';
+        echo 'window.location.href = "../'.$page.'.php";</script>';
+    } else {
+        echo '<script>alert("Berhasil dihapus.");';
+        echo 'window.location.href = "../'.$page.'.php";</script>';
+    }
 }

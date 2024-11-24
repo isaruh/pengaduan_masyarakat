@@ -12,7 +12,6 @@ $judul = $_POST['judul'];
 $isi = $_POST['isi'];
 $lokasi = $_POST['lokasi'];
 $tanggal = $_POST['tanggal'];
-$subjek = $_POST['subjek'];
 
 if (isset($_FILES['lampiran']) && $_FILES['lampiran']['error'] == 0) {
     $nama_lampiran = $_FILES['lampiran']['name'];
@@ -29,11 +28,11 @@ if (isset($_FILES['lampiran']) && $_FILES['lampiran']['error'] == 0) {
     $mime_lampiran = mime_content_type($fileTmp);
 
     // Menyimpan data ke database
-    $stmt = $conn->prepare("INSERT INTO pengaduan (user, judul, lokasi, subjek, tanggal, isi, nama_lampiran, file_lampiran, mime_lampiran) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO pengaduan (user, judul, lokasi, tanggal, isi, nama_lampiran, file_lampiran, mime_lampiran) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
     if (!$stmt) {
         die("Prepare failed: " . $conn->error);
     }
-    $stmt->bind_param("sssssssss", $user,  $judul, $lokasi, $subjek, $tanggal, $isi, $nama_lampiran, $file_lampiran, $mime_lampiran);
+    $stmt->bind_param("ssssssss", $user,  $judul, $lokasi, $tanggal, $isi, $nama_lampiran, $file_lampiran, $mime_lampiran);
 
     if ($stmt->execute()) {
         echo '<script>alert("Laporan Berhasil.");';

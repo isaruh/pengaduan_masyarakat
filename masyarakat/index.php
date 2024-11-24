@@ -1,9 +1,6 @@
 <?php
 session_start();
 include "conn/conn.php";
-
-$sql = "SELECT fasilitas FROM subjek";
-$result_subjek = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -11,7 +8,7 @@ $result_subjek = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layanan Pengaduan Fasilitas Umum Desa A</title>
+    <title>Layanan Pengaduan Masyarakat</title>
     <style>
         /* General Styles */
         body {
@@ -52,8 +49,7 @@ $result_subjek = $conn->query($sql);
         }
 
         .form-group input,
-        .form-group textarea,
-        .form-group select {
+        .form-group textarea {
             width: 100%;
             padding: 10px 15px; /* Updated padding for more space on both sides */
             border-radius: 5px;
@@ -110,7 +106,7 @@ $result_subjek = $conn->query($sql);
 
     <!-- Main Content -->
     <div class="main-content">
-        <h1>Layanan Pengaduan Fasilitas Umum Desa A</h1>
+        <h1>Layanan Pengaduan Masyarakat</h1>
         <p>Buat pengaduan langsung secara online</p>
     </div>
 
@@ -128,20 +124,6 @@ $result_subjek = $conn->query($sql);
             </div>
             <div class="form-group">
                 <input type="date" name="tanggal" placeholder="Tanggal Kejadian" required>
-            </div>
-            <div class="form-group">
-                <select name="subjek" required>
-                    <option value="" disabled selected>Subjek *</option>
-                    <?php
-                    if ($result_subjek->num_rows > 0) {
-                        while ($row = $result_subjek->fetch_assoc()) {
-                            echo "
-                            <option value='".$row['fasilitas']."'>".$row['fasilitas']."</option>
-                            ";
-                        }
-                    }
-                    ?>
-                </select>
             </div>
             <!-- Updated Upload Section -->
             <div class="form-group upload-section">

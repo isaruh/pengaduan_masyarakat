@@ -23,9 +23,7 @@ session_destroy();
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-image: url("img/bg.png");
-            background-repeat: no-repeat;
-            background-size: 100% auto;
+            background-color: #333;
             padding: 20px;
             flex-direction: column;
         }
@@ -40,7 +38,7 @@ session_destroy();
             background-color: #fff;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.2);
             max-width: 500px;
             width: 100%;
         }
@@ -66,7 +64,7 @@ session_destroy();
 
         .submit-btn {
             width: 100%;
-            background-color: #1d1d79;
+            background-color: #333;
             padding: 10px;
             margin-top: 20px;
             border: none;
@@ -81,13 +79,7 @@ session_destroy();
         }
 
         .submit-btn:hover {
-            background-color: #2e2e9e;
-        }
-
-        p {
-            color: #1d1d79;
-            margin-top: 10px;
-            font-size: 15px;
+            background-color: #777;
         }
     </style>
 </head>
@@ -96,10 +88,10 @@ session_destroy();
     <div class="form-container">
         <form action="proc/login.php" method="POST">
             <div class="form-group">
-                <input type="text" name="nik" placeholder="NIK *" autocomplete="off" required>
+                <input type="text" name="username" placeholder="Username *" autocomplete="off" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Password *" required>
+                <input type="password" name="password" placeholder="Password *" maxlength="20" required>
             </div>
             <button type="submit" class="submit-btn"><img src="img/masuk.png"></button>
         </form>

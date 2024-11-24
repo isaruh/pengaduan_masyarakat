@@ -1,12 +1,12 @@
 <div class="footer">
     <div class="social-icons">
-        <a href="#">📷</a>
-        <a href="#">📘</a>
-        <a href="#">🐦</a>
+        <a href="#"><img src="img/instagram.png" alt=""></a>
+        <a href="#"><img src="img/facebook.png" alt=""></a>
+        <a href="#"><img src="img/twitter.png" alt=""></a>
     </div>
     <div class="about">
         <h3>Tentang Kami</h3>
-        <p>Gorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <p>Layanan pengaduan untuk masyarakat umum</p>
         <p>Copyright 2024.</p>
     </div>
 </div>
