@@ -15,7 +15,7 @@ $stmt = $conn->prepare($sql);
 $stmt->bind_param("sssssi", $nik, $nama, $username, $no_telp, $password, $_SESSION['id_admin']);
 
 if ($stmt->execute()) {
-    $_SESSION['user'] = $username;
+    $_SESSION['admin'] = $username;
     echo "<script>alert('Data diperbarui.');";
     echo "window.location.href = '../account.php';</script>";
 } else {
